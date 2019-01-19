@@ -9,10 +9,6 @@ from .models import MoneyOwed
 def login_page(request):
     return render(request, 'iou_template/login_page.html', {})
 
-# def front_page(request):
-#     form = MoneyOwedForm()
-#     return render(request, 'iou_template/front_page.html', {'form':form})
-
 def SignUp(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
