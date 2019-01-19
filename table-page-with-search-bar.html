@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/algoliasearch/3/algoliasearch.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4/dist/instantsearch.min.css">
+<script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4/dist/instantsearch-theme-algolia.min.css">
+<script src="https://cdn.jsdelivr.net/npm/algoliasearch-helper@2.26.1/dist/algoliasearch.helper.min.js"></script>
+
+
+  <script src="lib.js"></script>
+</head>
+<body>
+ 
+
+<div class="jumbotron text-center">
+  <h1>Thank Mr. Goose</h1>
+  <div id="searchbox"></div>
+  
+  
+</div>
+<div id="hits"></div>
+
+ <script>
+    var client = algoliasearch('S7FDJJDL5S', '748ab50e766c1e957df0b9681f5af306');
+
+var index = client.initIndex('yeet');
+var helper = algoliasearchHelper(client, 'yeet');
+
+const search = instantsearch({
+  appId: 'S7FDJJDL5S',
+  apiKey: '748ab50e766c1e957df0b9681f5af306',
+  indexName: 'yeet',
+  routing: true,
+
+  searchFunction: function(helper) {
+    var searchResults = $('#hits');
+    if (helper.state.query === '') {
+      searchResults.hide();
+      return;
+    }
+    helper.search();
+    searchResults.show();
+  }
+});
+
+search.addWidget(
+    instantsearch.widgets.searchBox({
+      container: '#searchbox',
+      placeholder: 'search'
+    })
+  );
+
+search.addWidget(
+  instantsearch.widgets.hits({
+  container: '#hits',
+  templates: {
+    empty: "",
+    
+      item: '<p>Name: {{{_highlightResult.name.value}}}, Amount: {{{_highlightResult.amount.value}}}, Number: {{{_highlightResult.number.value}}}</p>'
+      
+    
+  }
+  })
+);
+
+
+search.start();
+
+search.helper.on('result', function(res) {
+  const title = document.querySelector('#hits');
+  if (res && res.hits && res.hits.length > 0) {
+    if(title != null)title.style.display = 'block';
+  } else {
+    if(title != null)title.style.display = 'none';
+  }
+});
+
+  </script>
+
+
+
+<div class="container" style="margin-bottom: 10%">
+  <div class="row">
+    <div class="col">
+    <h2>input</h2>
+  </div>
+  </div>
+  <div class="row ">
+
+    <div class="col">
+      <input type="text" id="myInput1" placeholder = "name" style="width: 100%"></input>
+    </div>
+    <div class="col">
+      <input type="text" id="myInput2" placeholder = "amount" style="width: 100%"></input>
+    </div>
+    <div class="col">
+      <input type="text" id="myInput3" placeholder = "phone" style="width: 100%"></input>
+    </div>
+    <div class="col">
+    <button onclick="myFunction()"  style="display: inline-block;">add</button>
+    
+    
+
+  </div>
+  </div>
+  
+
+
+
+</div>
+
+
+<script>
+  var ids = [];
+function myFunction() {
+
+  if(document.getElementById("myInput1").value == "" || document.getElementById("myInput2").value == "" || document.getElementById("myInput3").value == ""){
+    alert("fill out all the input!");
+    return;
+  }
+
+  var t1 = document.getElementById("myInput1").value;
+  var t2 = document.getElementById("myInput2").value;
+  var t3 = document.getElementById("myInput3").value;
+
+  index.addObject({
+  name: t1,
+  amount: t2,
+  number: t3
+}, function(err, content) {
+  console.log('objectID=' + content.objectID);
+  ids.push(content.objectID);
+});
+
+
+
+  var markup = "<tr><td>" + t1 + "</td><td>" + t2 + "</td></td>"+ "</td><td>" + t3 + "</td><td><input type='checkbox' name='record'></td></tr>";
+  $("table tbody").append(markup);
+
+  document.getElementById("myInput1").value = "";
+  document.getElementById("myInput2").value = "";
+  document.getElementById("myInput3").value = "";
+
+  
+}
+
+function deleteFunction(){
+    var i = 0;
+  
+            $("table tbody").find('input[name="record"]').each(function(){
+              if($(this).is(":checked")){
+                console.log(ids[i]);
+
+                
+
+                index.deleteObject(ids[i], function(err, content) {
+                  if (err) throw err;
+
+                  console.log(content);
+                });
+
+                ids.splice(i, 1);
+
+
+
+
+                    $(this).parents("tr").remove();
+                }
+                i++;
+            });
+}
+
+function messageFunction(){
+  $("table tbody").find('input[name="record"]').each(function(){
+      if($(this).is(":checked")){
+            var a = $(this).parents("tr").find("td:nth-child(3)").html();
+
+            console.log("hello");
+
+          const sms = lib.utils.sms['@1.0.9'];
+
+          sms({
+            to: a, // (required)
+            body: "test" // (required)
+          }).then(results => {
+            console.log(results);
+          }).catch(err => {
+            console.log(err);
+          });
+
+        }
+});
+
+
+}
+
+
+
+
+
+</script>
+
+<div class="container">
+  <h2>table</h2>           
+  <table class="table" id="myTable">
+    <thead>
+      <tr>
+        
+        <th>name</th>
+        <th>amount</th>
+        <th>phone</th>
+        <th>select</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+    </tbody>
+  </table>
+  <button onclick="deleteFunction()"  style="display: inline-block;">delete</button>
+    <button onclick="messageFunction()" style="display: inline-block;">message</button>
+</div>
+
+
+
+
+
+
+
+
+</body>
+
+</html>
