@@ -1,0 +1,18 @@
+People:
+{{ value|linebreaks }}
+<ul>
+{% for key in all_people %}
+<li>
+    Person: {{key.toPerson}} &nbsp
+    Amount: {{key.amount}} &nbsp
+    Email: {{key.email}} &nbsp
+    <form action="/deleteEntry/{{key.id}}/"
+        style="display: inline;"
+        methodo="post">{% csrf_token %}
+        <input type="submit" class="main" value="Delete"/>
+    </form>
+    {{ value|linebreaks }}
+</li>
+{% endfor %}
+</ul>
+<a href="{% url 'new_money_owed' %}">Add Entry</a>
