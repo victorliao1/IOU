@@ -21,7 +21,7 @@
  
 
 <div class="jumbotron text-center">
-  <h1>Thank Mr. Goose</h1>
+  <h1>IOU</h1>
   <div id="searchbox"></div>
   
   
@@ -31,13 +31,13 @@
  <script>
     var client = algoliasearch('S7FDJJDL5S', '748ab50e766c1e957df0b9681f5af306');
 
-var index = client.initIndex('yeet');
-var helper = algoliasearchHelper(client, 'yeet');
+var index = client.initIndex('index_name');
+var helper = algoliasearchHelper(client, 'index_name');
 
 const search = instantsearch({
   appId: 'S7FDJJDL5S',
   apiKey: '748ab50e766c1e957df0b9681f5af306',
-  indexName: 'yeet',
+  indexName: 'index_name',
   routing: true,
 
   searchFunction: function(helper) {
@@ -154,24 +154,14 @@ function myFunction() {
 
 function deleteFunction(){
     var i = 0;
-  
             $("table tbody").find('input[name="record"]').each(function(){
               if($(this).is(":checked")){
                 console.log(ids[i]);
-
-                
-
                 index.deleteObject(ids[i], function(err, content) {
                   if (err) throw err;
-
                   console.log(content);
                 });
-
                 ids.splice(i, 1);
-
-
-
-
                     $(this).parents("tr").remove();
                 }
                 i++;
@@ -214,10 +204,10 @@ function messageFunction(){
     <thead>
       <tr>
         
-        <th>name</th>
-        <th>amount</th>
-        <th>phone</th>
-        <th>select</th>
+        <th>Name</th>
+        <th>Amount</th>
+        <th>Phone</th>
+        <th>Select</th>
       </tr>
     </thead>
     <tbody>
@@ -227,14 +217,6 @@ function messageFunction(){
   <button onclick="deleteFunction()"  style="display: inline-block;">delete</button>
     <button onclick="messageFunction()" style="display: inline-block;">message</button>
 </div>
-
-
-
-
-
-
-
-
 </body>
 
 </html>

@@ -6,8 +6,11 @@ from django.urls import reverse_lazy
 from django.views import generic
 from .forms import MoneyOwedForm, CustomUserCreationForm
 from .models import MoneyOwed
-def login_page(request):
-    return render(request, 'iou_template/login_page.html', {})
+from .tables import MoneyOwedTable
+from django_tables2 import RequestConfig
+
+def main_page(request):
+    return render(request, 'iou_template/main_page.html', {})
 
 def SignUp(request):
     if request.method == 'POST':
@@ -35,10 +38,18 @@ def new_money_owed(request):
         form = MoneyOwedForm()
     return render(request, 'iou_template/front_page.html', {'form' : form})
 
-def money_list(request):
-    all_people = MoneyOwed.objects.filter(owner = request.user)
-    return render(request, 'iou_template/money_list.html', {'all_people' : all_people})
+# def money_list(request):
+#     all_people = MoneyOwed.objects.filter(owner = request.user)
+#     return render(request, 'iou_template/money_list.html', {'all_people' : all_people})
 
 def deleteEntry(request, entry_id):
     MoneyOwed.objects.get(id=entry_id).delete()
     return HttpResponseRedirect('/moneylist/')
+
+def money_list(request):
+    table = MoneyOwedTable(MoneyOwed.objects.filter(owner = request.user))
+    RequestConfig(request).configure(table)
+    return render(request, 'iou_template/money_list.html', {'table': table})
+
+
+

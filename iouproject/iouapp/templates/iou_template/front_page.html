@@ -1,0 +1,8 @@
+Hi {{ user.username }}!
+{{user.email}}
+<p><a href="{% url 'logout' %}">logout</a></p>
+<form method="POST" class="statistic-class">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="save btn btn-default">Save</button>
+</form>
