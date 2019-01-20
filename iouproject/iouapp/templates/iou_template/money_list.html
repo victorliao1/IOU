@@ -67,7 +67,8 @@
                                         methodo="post">{% csrf_token %}
                                         <input type="submit" class="main" value="Delete"/>
                                     </form>
-                                    {{ value|linebreaks }}
+									{{ value|linebreaks }}
+										
                                 {% endfor %} -->
                                 <br>
                                 <a href="{% url 'new_money_owed' %}">Add Entry</a>{{form.render}}
