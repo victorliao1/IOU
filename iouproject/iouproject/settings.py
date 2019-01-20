@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'iouapp',
     'django_tables2',
+    'paypal.standard.ipn',
 ]
 
 MIDDLEWARE = [
@@ -125,3 +126,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 LOGIN_REDIRECT_URL = '/moneylist/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
 AUTH_USER_MODEL = 'iouapp.CustomUser'
+
+PAYPAL_RECEIVER_EMAIL = 'victorliao18@gmail.com'
+PAYPAL_TEST = True
