@@ -8,8 +8,7 @@ urlpatterns = [
     path('moneylist/', views.money_list, name='money_list'),
     path('deleteEntry/<int:entry_id>/', views.deleteEntry, name='deleteEntry'),
     path('paypal/', include('paypal.standard.ipn.urls')),
-    # path('payment/', include('payment.urls')),
-    path('payment_process', views.payment_process, name='payment_process' ),
+    # path('payment_process', views.payment_process, name='payment_process' ),
     path('payment_done', views.payment_done, name='payment_done'),
     path('payment_canceled', views.payment_canceled, name='payment_canceled'),
 ]

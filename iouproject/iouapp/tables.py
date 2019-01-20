@@ -6,3 +6,4 @@ class MoneyOwedTable(tables.Table):
         model = MoneyOwed
         template_name = 'django_tables2/bootstrap.html'
         exclude = ['id']
+        

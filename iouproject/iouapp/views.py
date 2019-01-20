@@ -13,6 +13,7 @@ from django.urls import reverse
 from django.shortcuts import render, get_object_or_404
 from paypal.standard.forms import PayPalPaymentsForm
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 def main_page(request):
     return render(request, 'iou_template/main_page.html', {})
 
@@ -30,6 +31,7 @@ def SignUp(request):
         form = CustomUserCreationForm()
     return render(request, 'signup.html', {'form': form})
 
+@login_required
 def new_money_owed(request):
     if request.method == "POST":
         form = MoneyOwedForm(request.POST)
@@ -46,25 +48,16 @@ def new_money_owed(request):
 #     all_people = MoneyOwed.objects.filter(owner = request.user)
 #     return render(request, 'iou_template/money_list.html', {'all_people' : all_people})
 
+@login_required
 def deleteEntry(request, entry_id):
     MoneyOwed.objects.get(id=entry_id).delete()
     return HttpResponseRedirect('/moneylist/')
 
+@login_required
+@csrf_exempt
 def money_list(request):
     table = MoneyOwedTable(MoneyOwed.objects.filter(owner = request.user))
     RequestConfig(request).configure(table)
-    return render(request, 'iou_template/money_list.html', {'table': table})
-
-@csrf_exempt
-def payment_done(request):
-    return render(request, 'payment/payment_done.html')
-
-@csrf_exempt
-def payment_canceled(request):
-    return render(request, 'payment/payment_cancelled.html')
-
-@csrf_exempt
-def payment_process(request):
     host = request.get_host()
     paypal_dict = {
         'business': settings.PAYPAL_RECEIVER_EMAIL ,
@@ -77,4 +70,19 @@ def payment_process(request):
         'cancel_return': 'http://{}{}'.format(host, reverse('payment_canceled')),
        }
     form = PayPalPaymentsForm(initial=paypal_dict)
-    return render(request, 'payment/payment_process.html', {'form': form })
+    return render(request, 'iou_template/money_list.html',{'table': table, 'form': form})
+
+@login_required
+@csrf_exempt
+def payment_done(request):
+    return HttpResponseRedirect('/moneylist/')
+
+@login_required
+@csrf_exempt
+def payment_canceled(request):
+    return render(request, 'payment/payment_cancelled.html')
+
+# @login_required
+# @csrf_exempt
+# def payment_process(request):
+#     return render(request, 'payment/payment_process.html', {'form': form })
